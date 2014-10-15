@@ -16,11 +16,10 @@ def get_user_input_matrix():
     return user_item_matrix_i
 
 
+
 # Generating Associative Matrix representing rows as users, items as colums and the matrix element as the rating (R_{u,i} data)
 
 def generate_user_item_rating_matrix():
-
-
 #   Initializing the matrix to all zeros for No of users = 49290 items = 139739
 
     s = (49290,139739)
