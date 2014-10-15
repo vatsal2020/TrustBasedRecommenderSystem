@@ -21,9 +21,7 @@ def get_user_input_matrix():
 
 def generate_user_item_rating_matrix():
 #   Initializing the matrix to all zeros for No of users = 49290 items = 139739
-
     s = (49290,139739)
-# rating_matrix = [[0 for col in range(139737)] for row in range(49289)]
     rating_matrix = np.zeros(s)
 
 #getting the integer matrix of the training data set
