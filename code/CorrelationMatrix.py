@@ -2,7 +2,7 @@ from numpy import *
 import numpy as np
 
 #Building training data samples
-# Converted the training input data from file to an integer matrix
+# Converting the training input data from a text file to an integer matrix
 def get_user_input_matrix():
     
     user_item_matrix=[]
@@ -43,7 +43,7 @@ def generate_user_item_rating_matrix():
     return rating_matrix
 
 
-# calling the functions
+# invoking the functions
 
 #get_user_input_matrix()
 generate_user_item_rating_matrix()
