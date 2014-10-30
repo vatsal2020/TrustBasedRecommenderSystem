@@ -42,8 +42,8 @@ def get_Pearson_Correlation_Matrix():
         for user1 in range(user+1,49290):
             temp =get_common_item_indices(user,user1)
             print temp
-            pearson_correlation_matrix[user][user1]=st.pearsonr(rating_matrix[user][temp], rating_matrix[user1][temp]) ### Getting error over here
+            pearson_correlation_matrix[user][user1]=st.pearsonr(temp[0], temp[1]) ### Getting error over here
     print pearson_correlation_matrix[0][1]
 
-get_Pearson_Correlation_Matrix()
+
 
