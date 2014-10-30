@@ -32,8 +32,9 @@ def get_common_item_indices(i,j):
     global rating_matrix
     col1 = rating_matrix[i,:]
     col2 = rating_matrix[j,:]
-    subset1 = (col1>0)&(col2>0)
-    return(subset1) ## returing the boolean values
+    subset = (col1>0)&(col2>0)
+    rating = rating_matrix[[[i],[j]],subset]
+    return(rating) ## returing the boolean values
 
 def get_Pearson_Correlation_Matrix():
     global pearson_correlation_matrix
