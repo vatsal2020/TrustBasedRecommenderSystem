@@ -36,7 +36,7 @@ def get_trust(user,item):
     user_j = i
     while depth <= 3:
         depth = depth+1
-        trusted_users_i = which(trust_matrix[user_j,:]>0)
+        trusted_users_i = ##find which fn## which(trust_matrix[user_j,:]>0)
         total_trust = len(trusted_users_i)
         user_j = rand.randint(range(total_trust))
         r_prob = r_prob*total_trust
