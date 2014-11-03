@@ -29,8 +29,7 @@ def get_user_trust_matrix():
 
 #Retrieve the rating matrix 
 trust_matrix=get_user_trust_matrix()
-np.save('trust.npy', trust_matrix)
-
+np.save("trust", trust_matrix)
 
 rating_matrix = get_training_trust_data("sample_user_item_training.txt")
 
