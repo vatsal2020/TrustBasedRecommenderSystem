@@ -42,7 +42,9 @@ def get_rating_trust(user,item):
     den_prob = 0
     sum_rating =0
     for n in range(10000):
-        user_j = i
+	depth = 0
+  	r_prob = 1         
+        user_j = user
         while depth <= 6:
             depth = depth+1
             # Find the index of all users which user_j trusts
@@ -53,10 +55,10 @@ def get_rating_trust(user,item):
             #Pick a random user j from the set of selected indices
             user_j =random.choice(trusted_users_j)
             #Probability with which user_j was picked
-            r_prob = 1/total_trust
+            r_prob = r_prob * 1/total_trust
             #Update the numerator and the denominator to find the avg rating of the item i
-            if rating_matrix[user_j][i] > 0:
-                sum_rating = sum_rating + rating_matrix[user_j][i]*r_prob
+            if rating_matrix[user_j][item] > 0:
+                sum_rating = sum_rating + rating_matrix[user_j][item]*r_prob
                 den_prob = den_prob + r_prob
                 break
             
