@@ -10,7 +10,7 @@ from copy import deepcopy
 
 data=np.genfromtxt("data/trimmed_items_ratings.txt",delimiter=' ',dtype=int)
 data.shape
-data=data[range(100),:]
+data=data[range(500),:]
 
 item_adj_list=dict.fromkeys(data[:,1],None)
 
@@ -80,7 +80,15 @@ for i in item_keys:
     for j in item_keys:
         if not(i==j):
             similarity = pearson_corr(i,j);
-            if not (similarity == -2):
-                top_similar_items[i].append((j,similarity))
-                
-                
+            if not (similarity <0):
+                if (len(top_similar_items[i])<=30):                
+                    top_similar_items[i].append((j,similarity))
+                else:
+                    simvals=list(zip(*top_similar_items[i]))[1]
+                    minsim=min(simvals)
+                    minindex=simvals.index(minsim)
+                    if (similarity>=minsim):
+                        top_similar_items[i][minindex]=(j,similarity)
+                        
+                    
+                 
