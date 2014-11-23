@@ -10,7 +10,7 @@ from copy import deepcopy
 
 data=np.genfromtxt("data/trimmed_items_ratings.txt",delimiter=' ',dtype=int)
 data.shape
-data=data[range(500),:]
+data=data[range(5000),:]
 
 item_adj_list=dict.fromkeys(data[:,1],None)
 
@@ -90,5 +90,26 @@ for i in item_keys:
                     if (similarity>=minsim):
                         top_similar_items[i][minindex]=(j,similarity)
                         
-                    
-                 
+maxnum=0 
+keyval=0                
+for i in top_similar_items.keys():
+    tempnum=len(top_similar_items[i])
+    if (tempnum>maxnum):
+        maxnum=tempnum
+        keyval=i
+                  
+user=1
+item=keyval                  
+def predictrating(user,item):
+    similarratings=[]
+    itemrated=list(zip(*user_adj_list[user]))[0]
+    for i in range(len(top_similar_items[item])):
+        try:
+            similarratings.append((top_similar_items[item][i][1],user_adj_list[user][itemrated.index(top_similar_items[item][i][0])][1]))
+        except IndexError:
+            continue
+    print(len(similarratings))
+    return np.dot(list(zip(*similarratings))[0],list(zip(*similarratings))[1])/sum(list(zip(*similarratings))[0])
+        
+print(predictrating(user,item))  
+
