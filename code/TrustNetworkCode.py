@@ -1,11 +1,6 @@
 
 # coding: utf-8
 
-# In[ ]:
-
-
-
-
 # In[1]:
 
 import numpy as np
@@ -16,12 +11,12 @@ import random
 
 # In[2]:
 
-rating_data=np.genfromtxt("data/trimmed_items_ratings.txt",delimiter=' ',dtype=int)
+rating_data=np.genfromtxt("data/trimmed_training.txt",delimiter=' ',dtype=int)
 rating_list_size = rating_data.shape[0]
 
 
 
-trust_data = np.genfromtxt("data/trimmed_items_ratings.txt",delimiter=' ',dtype=int)
+trust_data = np.genfromtxt("data/trimmed_trust.txt",delimiter=' ',dtype=int)
 trust_list_size = rating_data.shape[0]
 
 
@@ -66,11 +61,11 @@ def get_rating_trust(user,item):
     r_prob = 1         
     den_prob = 0
     sum_rating =0
-    for n in range(10000):
+    for n in range(10):
         depth = 0
         r_prob = 1
         user_j = user
-        while depth <= 6:
+        while depth <= 2:
             depth = depth+1
             # Find the index of all users which user_j trusts
             trusted_users_j = trust_list[user]
@@ -133,19 +128,4 @@ def RMSE():
 # In[ ]:
 
 RMSE_Trust_val = RMSE()
-
-
-# In[ ]:
-
-RMSE_Trust_val
-
-
-# In[3]:
-
-coverage_count
-
-
-# In[ ]:
-
-
 
