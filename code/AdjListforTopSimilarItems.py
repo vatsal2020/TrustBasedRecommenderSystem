@@ -61,7 +61,17 @@ for i in user_averages.keys():
    user_averages[i]=np.average(list(zip(*user_adj_list[i]))[1])
 
 
+# In[15]:
+
+
+
+
 # In[ ]:
+
+
+
+
+# In[9]:
 
 coverage=0
 denom=0
@@ -76,7 +86,7 @@ for i in user_adj_list_test.keys():
                     
 
 
-# In[ ]:
+# In[2]:
 
 sim15=0
 i=1
@@ -115,7 +125,7 @@ simij=pearson_corr(i,j)
 print(simij)
 
 
-# In[ ]:
+# In[3]:
 
 
 
@@ -151,19 +161,24 @@ for i in top_similar_items.keys():
         
 
 
-# In[ ]:
+# In[13]:
+
+print len(user_adj_list_test.keys())
+print len(item_adj_list_test.keys())
+print len(user_adj_list_test.keys())*len(item_adj_list_test.keys())
 
 
-
-
-# In[ ]:
+# In[24]:
 
 def predictrating(user,item):
     similarratings=[]
     itemrated=list(zip(*user_adj_list[user]))[0]
     for i in range(len(top_similar_items[item])):
         try:
-            similarratings.append((top_similar_items[item][i][1],user_adj_list[user][itemrated.index(top_similar_items[item][i][0])][1]))
+            i1= top_similar_items[item][i][1]
+            item_index =itemrated.index(top_similar_items[item][i][0])
+            u1 = user_adj_list[user][item_index][1]
+            similarratings.append((i1,u1))
         except IndexError:
             continue
         except ValueError: # need to check 
@@ -174,12 +189,12 @@ def predictrating(user,item):
     return np.dot(list(zip(*similarratings))[0],list(zip(*similarratings))[1])/sum(list(zip(*similarratings))[0])
 
 
-# In[ ]:
+# In[25]:
 
 print(predictrating(1,61))
 
 
-# In[ ]:
+# In[6]:
 
 
 # RMSE calculation
@@ -204,7 +219,7 @@ for user in user_adj_list_test.keys():
 RMSE=np.sqrt(sumerr/numpreds) 
 
 
-# In[18]:
+# In[16]:
 
 print RMSE
 
@@ -214,14 +229,24 @@ print RMSE
 
 
 
-# In[17]:
+# In[10]:
 
 print coverage
 
 
-# In[19]:
+# In[11]:
 
 print denom
+
+
+# In[26]:
+
+print max(item_adj_list.keys())
+
+
+# In[28]:
+
+print top_similar_items[139441]
 
 
 # In[ ]:
