@@ -1,23 +1,10 @@
-
-# coding: utf-8
-
-# In[1]:
-
-get_ipython().magic(u'load AdjListforTopSimilarItems.py')
-
-
-# In[2]:
-
-
-# In[1]:
-
 import numpy as np
 from copy import deepcopy
 
-data=np.genfromtxt("data/trimmed_training.txt",delimiter=' ',dtype=int)
+data=np.genfromtxt("trimmed_training_10_10.txt",delimiter=' ',dtype=int)
 #data=data[range(50000),:]
 
-testdata=np.genfromtxt("data/trimmed_test.txt",delimiter=' ',dtype=int)
+testdata=np.genfromtxt("trimmed_test_10_10.txt",delimiter=' ',dtype=int)
 #testdata=testdata[range(5000),:]
 
 item_adj_list=dict.fromkeys(data[:,1],None)
@@ -59,8 +46,6 @@ for i in user_averages.keys():
    user_averages[i]=np.average(list(zip(*user_adj_list[i]))[1])
 
 
-# In[ ]:
-
 coverage=0
 denom=0
 
@@ -71,11 +56,6 @@ for i in user_adj_list_test.keys():
                 denom=denom+1
                 if not(predictrating(i,j)==-1):
                     coverage=coverage+1
-                    
-
-
-
-# In[4]:
 
 
 import math
@@ -117,7 +97,7 @@ simij=pearson_corr(i,j)
 print(simij)
 
 
-# In[6]:
+# In[3]:
 
 
 #Reading data from top similar items
@@ -161,10 +141,6 @@ for i in top_similar_items.keys():
         p = str(i) +" "+ str(u)+" "+str(r)+"\n"
         with open('top_similar_items.txt', 'a') as f:    
              f.write(p)
-            
-
-
-# In[7]:
 
 def predictrating(user,item):
     similarratings=[]
@@ -182,10 +158,6 @@ def predictrating(user,item):
     return np.dot(list(zip(*similarratings))[0],list(zip(*similarratings))[1])/sum(list(zip(*similarratings))[0])
 
 print(predictrating(1,61))
-
-
-# In[8]:
-
 
 
 # RMSE calculation
@@ -217,14 +189,8 @@ print coverage
 print denom
 
 
-
-# In[9]:
-
 print len(item_adj_list.keys())
 print len(top_similar_items.keys())
-
-
-# In[ ]:
 
 
 
