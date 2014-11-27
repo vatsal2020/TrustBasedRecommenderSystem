@@ -1,7 +1,18 @@
+
+# coding: utf-8
+
+# In[1]:
+
 import numpy as np
 import math
 import random
 from copy import deepcopy
+
+
+# In[2]:
+
+import numpy as np
+
 
 data=np.genfromtxt("data/trimmed_training.txt",delimiter=' ',dtype=int)
 #data=data[range(50000),:]
@@ -47,6 +58,9 @@ user_averages=dict.fromkeys(data[:,0],0)
 for i in user_averages.keys():
    user_averages[i]=np.average(list(zip(*user_adj_list[i]))[1])
 
+
+# In[4]:
+
 sim15=0
 i=1
 j=5
@@ -85,9 +99,13 @@ simij=pearson_corr(i,j)
 print(simij)
 
 
+# In[5]:
+
 simij=pearson_corr(1,61)
 print(simij)
 
+
+# In[8]:
 
 u=1
 i=61
@@ -96,6 +114,7 @@ k=2
 def phip(u,i,k):
     maxsim=0
     dist = []
+    #dist = [[] for x in xrange(len(user_adj_list[u]))]  
     for l in user_adj_list[u]:
         sim=pearson_corr(i,l[0])
         if(sim!=-2): 
@@ -108,39 +127,13 @@ def phip(u,i,k):
         sims=list(zip(*dist))[1]# change
         sims=sims/sum(sims)  
         dist=zip(items,sims)
-        val,pr = random_distr(dist)
+        val,pr = get_random_item(dist)
     return maxsim/(1+math.exp(-((k*1.0)/2))),val
    
 p,pr=phip(u,i,k)
 print pr
 print p
 
-def random_distr(l):
-    assert l # don't accept empty lists
-    r = random.uniform(0, 1)
-    s = 0
-    for i in xrange(len(l)):
-        item, prob = l[i]
-        s += prob
-        if s >= r:
-            l.pop(i) # remove the item from the distribution
-            break
-    else: # Might occur because of floating point inaccuracies
-        l.pop()
-    # update probabilities based on new domain
-    d = 1 - prob
-    t = deepcopy(l)
-    for i in xrange(len(l)):
-        p_b = l[i][1]/d
-        t.append((l[i][0],p_b))
-        del t[i]
-    return item, t
-
-dist = [(11, 0.5), (20, 0.25), (3, 0.05), (43, 0.01), (51, 0.09), (6, 0.1)]
-val = random_distr(dist)
-print val[0]
-
-############################Original code for random probability below ###############
 
 # In[36]:
 
@@ -167,9 +160,137 @@ print val[0]
 #print val    
 
 
+# In[7]:
+
+def get_random_item(l):
+    assert l # don't accept empty lists
+    r = random.uniform(0, 1)
+    s = 0
+    for i in xrange(len(l)):
+        item, prob = l[i]
+        s += prob
+        if s >= r:
+            l.pop(i) # remove the item from the distribution
+            break
+    else: # Might occur because of floating point inaccuracies
+        l.pop()
+    # update probabilities based on new domain
+    d = 1 - prob 
+    t = deepcopy(l)
+    for i in xrange(len(l)):
+        p_b = l[i][1]/d
+        t.append((l[i][0],p_b))
+        del t[i]
+    return item, t
+
+dist = [(11, 0.5), (20, 0.25), (3, 0.05), (43, 0.01), (51, 0.09), (6, 0.1)]
+val = get_random_item(dist)
+print val[0]
+
+
 # In[9]:
 
+trustdata=np.genfromtxt("data/trust_data 2.txt",delimiter=' ',dtype=int)
+trust_adj_list=dict.fromkeys(trustdata[:,0],None)
+list_trust_size = trustdata.shape[0]
+for i in trust_adj_list.keys():
+    trust_adj_list[i]=[]
 
+for i in range(list_trust_size):
+        trust_adj_list[trustdata[i][0]].append(trustdata[i][1])
+
+
+# In[10]:
+
+print len(trust_adj_list[1])
+
+
+# In[ ]:
+
+
+
+
+# In[11]:
+
+
+user=1
+item=5
+u=user
+
+#print user_adj_list[user]
+def random_walk(u,item):
+    max_depth=6
+    rating=0
+    for i in range(max_depth+1):
+        if not(user_adj_list.has_key(u)):
+            rating=-1
+            break
+        prob,ritem=phip(u,item,i)
+        #print "i =",i
+        #print "prob=",prob
+        if (random.uniform(0, 1)<prob):
+            #print "ritem=",ritem
+            uitems= list(zip(*user_adj_list[u]))[0]
+            uratings= list(zip(*user_adj_list[u]))[1]
+            rating=uratings[uitems.index(ritem)]
+            #print "rating=",rating
+            break
+        else: 
+            if not(trust_adj_list.has_key(u)):
+                rating=-1
+                break
+            ind=random.randint(0,len(trust_adj_list[u])-1)
+            u=trust_adj_list[u][ind]
+            #print "u",u
+    if (rating==0):
+        rating=-1
+    return rating
+r =random_walk(user,item)
+print "final rating",r
+
+
+# In[12]:
+
+uitems= list(zip(*user_adj_list[1]))[0]
+uratings= list(zip(*user_adj_list[1]))[1]
+rating=uratings[uitems.index(18)]
+print rating
+
+
+# In[15]:
+
+numpreds=0
+sumerr=0
+count=0
+for user in user_adj_list_test.keys():
+    if (user_adj_list.has_key(user)):
+        for j in range(len(user_adj_list_test[user])):
+            item=user_adj_list_test[user][j][0]
+            if item_adj_list.has_key(item):
+                nwalks=100
+                successfulwalks=0
+                sum_ratings=0
+                for walk in range(nwalks):
+                    rat=random_walk(user,item)
+                    if not(rat==-1):
+                        successfulwalks=successfulwalks+1
+                        sum_ratings=sum_ratings+rat
+                pr=-1
+                if not(sum_ratings==0):
+                    pr=sum_ratings*1.0/successfulwalks
+                    temp = (pr-user_adj_list_test[user][j][1])
+                    sumerr=sumerr+(temp * temp)
+                    numpreds=numpreds+1
+            else:
+                continue
+    else:
+        continue
+    count = count + 1
+    if(count%10000 == 0):
+        print count    
+            
+RMSE=np.sqrt(sumerr/numpreds) 
+print "RMSE",RMSE
 
 
 # In[ ]:
