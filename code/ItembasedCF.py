@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Dec  1 18:29:09 2014
+
+@author: Divya
+"""
+
 import numpy as np
 from copy import deepcopy
 
@@ -83,65 +90,22 @@ def pearson_corr(i,j):
       
 
 
-# In[3]:
-
-
-#Reading data from top similar items
-#topsimilardata=np.genfromtxt("data/top_similar_items.txt",delimiter=' ',dtype=int)
-#top_similar_items =dict.fromkeys(topsimilardata[:,0],None)
-
-#for i in top_similar_items.keys():
- #   top_similar_items[i]=[]
-
-#for i in range(topsimilardata.shape[0]):
- #   top_similar_items[topsimilardata[i][0]].append((topsimilardata[i][1],topsimilardata[i][2]))   
-    
-
-
-# calculate similarity list for all items
-top_similar_items =dict.fromkeys(data[:,1],None)
-
-for i in top_similar_items.keys():
-    top_similar_items[i]=[]
-
-item_keys = top_similar_items.keys()
-for i in item_keys:
-    for j in item_keys:
-        if not(i==j):
-            similarity = pearson_corr(i,j);
-            if not (similarity <0):
-                if (len(top_similar_items[i])<=30):                
-                    top_similar_items[i].append((j,similarity))
-                else:
-                    simvals=list(zip(*top_similar_items[i]))[1]
-                    minsim=min(simvals)
-                    minindex=simvals.index(minsim)
-                    if (similarity>=minsim):
-                        top_similar_items[i][minindex]=(j,similarity)
-                        
-               
-open('top_similar_items.txt', 'w').close()
-for i in top_similar_items.keys():
-    for l in top_similar_items[i]:
-        u,r = l
-        p = str(i) +" "+ str(u)+" "+str(r)+"\n"
-        with open('top_similar_items.txt', 'a') as f:    
-             f.write(p)
 
 def predictrating(user,item):
-    similarratings=[]
     itemrated=list(zip(*user_adj_list[user]))[0]
-    for i in range(len(top_similar_items[item])):
-        try:
-            similarratings.append((top_similar_items[item][i][1],user_adj_list[user][itemrated.index(top_similar_items[item][i][0])][1]))
-        except IndexError:
-            continue
-        except ValueError: # need to check 
-            continue
-    #print(len(similarratings))
-    if(len(similarratings)<=2):
+    ratings=list(zip(*user_adj_list[user]))[1]
+    sumrating=0
+    sumsim=0
+    for i in itemrated:
+        sim=pearson_corr(i,item)
+        if(sim>0):
+            sumrating=sumrating+ratings[i]
+            sumsim=sumsim+sim
+    if(sumsim!=0):
+        return sumrating*1.0/sumsim
+    else:
         return -1
-    return np.dot(list(zip(*similarratings))[0],list(zip(*similarratings))[1])/sum(list(zip(*similarratings))[0])
+        
 
 #print(predictrating(1,61))
 
@@ -169,26 +133,9 @@ RMSE=np.sqrt(sumerr/numpreds)
 
 
 print RMSE
-
-coverage=0
-denom=0
-
-for i in user_adj_list_test.keys():
-    if (user_adj_list.has_key(i)):
-        for j in item_adj_list_test.keys():
-            if (item_adj_list.has_key(j)):
-                denom=denom+1
-                if not(predictrating(i,j)==-1):
-                    coverage=coverage+1
+print numpreds/7500
 
 
-print coverage
-
-print denom
-
-
-#print len(item_adj_list.keys())
-#print len(top_similar_items.keys())
 
 
 

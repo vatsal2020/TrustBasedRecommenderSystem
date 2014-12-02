@@ -17,7 +17,7 @@ import numpy as np
 data=np.genfromtxt("trimmed_training.txt",delimiter=' ',dtype=int)
 #data=data[range(50000),:]
 
-testdata=np.genfromtxt("trimmed_test.txt",delimiter=' ',dtype=int)
+testdata=np.genfromtxt("trimmed_test_10_10.txt",delimiter=' ',dtype=int)
 #testdata=testdata[range(5000),:]
 
 item_adj_list=dict.fromkeys(data[:,1],None)
@@ -240,17 +240,45 @@ RMSE=np.sqrt(sumerr/numpreds)
 print "RMSE",RMSE
 
 
+##Calculating coverage for first 500 users and items
+user_adj_list_test=dict.fromkeys(testdata[:,0],None)
+
+for i in user_adj_list_test.keys():
+    user_adj_list_test[i]=[]
+
+for i in range(testdata.shape[0]):
+    user_adj_list_test[testdata[i][0]].append((testdata[i][1],testdata[i][2])) 
+
+
+
+item_adj_list_test=dict.fromkeys(testdata[:,1],None)
+
+for i in item_adj_list_test.keys():
+    item_adj_list_test[i]=[]
+
+for i in range(testdata.shape[0]):
+    item_adj_list_test[testdata[i][1]].append((testdata[i][0],testdata[i][2]))    
+    
 coverage=0
 denom=0
 
+nusers=0
+nitems=0
 for i in user_adj_list_test.keys():
+    nusers=nusers+1
+    if (nusers>500):
+        break
     if (user_adj_list.has_key(i)):
+        nitems=0
         for j in item_adj_list_test.keys():
+            nitems=nitems+1
+            if(nitems>500):
+                break
             if (item_adj_list.has_key(j)):
                 denom=denom+1
                 nwalks=1000
                 for walk in range(nwalks):
-                    rat=random_walk(user,item)
+                    rat=random_walk(i,j)
                     if not(rat==-1):
                         coverage=coverage+1
                         break
