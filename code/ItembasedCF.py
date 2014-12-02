@@ -1,4 +1,9 @@
-# -*- coding: utf-8 -*-
+
+# coding: utf-8
+
+# In[10]:
+
+
 """
 Created on Mon Dec  1 18:29:09 2014
 
@@ -23,13 +28,7 @@ for i in item_adj_list.keys():
 for i in range(data.shape[0]):
     item_adj_list[data[i][1]].append((data[i][0],data[i][2]))
     
-item_adj_list_test=dict.fromkeys(testdata[:,1],None)
 
-for i in item_adj_list_test.keys():
-    item_adj_list_test[i]=[]
-
-for i in range(testdata.shape[0]):
-    item_adj_list_test[testdata[i][1]].append((testdata[i][0],testdata[i][2]))    
     
 user_adj_list=dict.fromkeys(data[:,0],None)
 
@@ -39,21 +38,34 @@ for i in user_adj_list.keys():
 for i in range(data.shape[0]):
     user_adj_list[data[i][0]].append((data[i][1],data[i][2]))
     
-user_adj_list_test=dict.fromkeys(testdata[:,0],None)
+
+item_averages=dict.fromkeys(data[:,1],0)
+
+for i in item_averages.keys():
+   item_averages[i]=np.average(list(zip(*item_adj_list[i]))[1])
+
+
+# In[11]:
+
+no_of_Test= 7500
+item_adj_list_test=dict.fromkeys(testdata[0:no_of_Test,1],None)
+
+for i in item_adj_list_test.keys():
+   item_adj_list_test[i]=[]
+
+for i in range(no_of_Test):
+   item_adj_list_test[testdata[i][1]].append((testdata[i][0],testdata[i][2])) 
+
+user_adj_list_test=dict.fromkeys(testdata[0:no_of_Test,0],None)
 
 for i in user_adj_list_test.keys():
     user_adj_list_test[i]=[]
 
-for i in range(testdata.shape[0]):
+for i in range(no_of_Test):
     user_adj_list_test[testdata[i][0]].append((testdata[i][1],testdata[i][2]))    
-    
-user_averages=dict.fromkeys(data[:,0],0)
-
-for i in user_averages.keys():
-   user_averages[i]=np.average(list(zip(*user_adj_list[i]))[1])
 
 
-
+# In[12]:
 
 import math
 
@@ -90,25 +102,30 @@ def pearson_corr(i,j):
       
 
 
+# In[13]:
 
 def predictrating(user,item):
     itemrated=list(zip(*user_adj_list[user]))[0]
     ratings=list(zip(*user_adj_list[user]))[1]
     sumrating=0
     sumsim=0
-    for i in itemrated:
-        sim=pearson_corr(i,item)
+    simitems=0
+    for i in range(len(itemrated)):
+        sim=pearson_corr(itemrated[i],item)
         if(sim>0):
-            sumrating=sumrating+ratings[i]
+            sumrating=sumrating+sim*(ratings[i]-item_averages[itemrated[i]])
             sumsim=sumsim+sim
-    if(sumsim!=0):
-        return sumrating*1.0/sumsim
+            simitems=simitems+1
+    if(simitems>5):
+        return (item_averages[item]+(sumrating*1.0/sumsim))
     else:
         return -1
         
 
 #print(predictrating(1,61))
 
+
+# In[14]:
 
 # RMSE calculation
 numpreds=0
@@ -133,9 +150,15 @@ RMSE=np.sqrt(sumerr/numpreds)
 
 
 print RMSE
-print numpreds/7500
+print numpreds/7500.0
 
 
+# In[9]:
+
+numpreds/7500.0
+
+
+# In[ ]:
 
 
 
