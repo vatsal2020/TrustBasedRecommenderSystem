@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 """
 Created on Sat Nov 29 22:30:35 2014
 
@@ -47,6 +47,5 @@ for i in user_adj_list_test.keys():
                     if not(rat==-1):
                         coverage=coverage+1
                         break
-
 
 print "Coverage",coverage*1.0/denom
