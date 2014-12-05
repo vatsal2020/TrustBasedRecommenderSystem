@@ -59,7 +59,7 @@ for i in range(no_of_Test):
     user_adj_list_test[testdata[i][0]].append((testdata[i][1],testdata[i][2]))    
 
 
-# In[5]:
+# In[3]:
 
 trustdata=np.genfromtxt("data/trust_data 2.txt",delimiter=' ',dtype=int)
 trust_adj_list=dict.fromkeys(trustdata[:,0],None)
@@ -71,19 +71,9 @@ for i in range(list_trust_size):
         trust_adj_list[trustdata[i][0]].append(trustdata[i][1])
 
 
-# In[28]:
-
-print len(trust_adj_list.keys())
-print len(user_adj_list.keys())
-print len(item_adj_list.keys())
-print user_adj_list_test[1][0]
-
-
-# In[3]:
+# In[4]:
 
 import math
-
-
 def pearson_corr_user(i,j):
     if not(i in user_adj_list) or not(j in user_adj_list):  
         return -2
@@ -111,11 +101,10 @@ def pearson_corr_user(i,j):
         return ( num*1.0/deno) 
     else:
         return -2
-      
+    
 
 
-
-# In[6]:
+# In[5]:
 
 coverage_count =0
 
@@ -158,7 +147,7 @@ def predictrating(user,item):
 #predict_rating(1,74)
 
 
-# In[7]:
+# In[6]:
 
 numpreds=0
 sumerr=0.0
@@ -183,12 +172,22 @@ RMSE=np.sqrt(sumerr/numpreds)
 
 
 print RMSE
-print numpreds/7500
+print numpreds/7500.0
 
 
-# In[9]:
+# In[7]:
 
 numpreds/7500.0
+
+
+# In[7]:
+
+
+
+
+# In[7]:
+
+
 
 
 # In[ ]:
