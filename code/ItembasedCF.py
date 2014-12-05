@@ -1,6 +1,15 @@
 
 # coding: utf-8
 
+# In[1]:
+
+get_ipython().magic(u'load ItembasedCF.py')
+
+
+# In[ ]:
+
+
+
 # In[10]:
 
 
@@ -13,10 +22,10 @@ Created on Mon Dec  1 18:29:09 2014
 import numpy as np
 from copy import deepcopy
 
-data=np.genfromtxt("trimmed_training_10_10.txt",delimiter=' ',dtype=int)
+data=np.genfromtxt("full_training.txt",delimiter=' ',dtype=int)
 #data=data[range(50000),:]
 
-testdata=np.genfromtxt("trimmed_test_10_10.txt",delimiter=' ',dtype=int)
+testdata=np.genfromtxt("test_5000.txt",delimiter=' ',dtype=int)
 #testdata=testdata[range(5000),:]
 
 item_adj_list=dict.fromkeys(data[:,1],None)
@@ -47,7 +56,7 @@ for i in item_averages.keys():
 
 # In[11]:
 
-no_of_Test= 7500
+no_of_Test= testdata.shape[0]
 item_adj_list_test=dict.fromkeys(testdata[0:no_of_Test,1],None)
 
 for i in item_adj_list_test.keys():
@@ -156,6 +165,12 @@ print numpreds/7500.0
 # In[9]:
 
 numpreds/7500.0
+
+
+# In[ ]:
+
+
+
 
 
 # In[ ]:
